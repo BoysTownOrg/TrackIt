@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -63,6 +64,7 @@ public class GameScreen extends Screen {
 	private Status status;
 	private long trialLength = 0;    // in milliseconds
 	private int trialCount = 0;
+	private long[] trialLengths;
 
 	// Blocks
 	private int numColumns=3, numRows=3;
@@ -111,7 +113,7 @@ public class GameScreen extends Screen {
 		animUpdater = new Thread(new AnimatorThread(this));
 		animUpdater.start();
 
-		Util.dPrintln("Started trial ###, length is " + trialLength + "ms.");
+		Util.dPrintln("Started trial ###, length is " + trialLengths[trialCount-1] + "ms.");
 
 		for(Stimulus stim : stimEverything ) {
 			stim.getAnimator().start();
@@ -148,7 +150,6 @@ public class GameScreen extends Screen {
 		// Only want to initialize the background grid, load the distractors, etc once---not 
 		// each time the user sees the screen
 		if(!initialized) {
-
 			// Kill the titlebar and fullscreen for the experiment
 			if( experiment.getUsesFullscreen() ) {
 				Util.dPrintln("Attempting to switch to fullscreen mode for trials.");
@@ -238,6 +239,13 @@ public class GameScreen extends Screen {
 			// Compute the ending location for the target (across all trials)
 			stimTargetEndingPos = owner.getGameState().getRandomGen().getRandomEndPositions(
 					owner.getGameState().getSettings().getExperiment().getTrialCount() );
+
+			trialLengths = new long[settings.getExperiment().getTrialCount()];
+			for(int i=0; i < settings.getExperiment().getTrialCount(); i++) {
+				long average = ((long) settings.getExperiment().getTrialLength());
+				long jitter = 2000;
+				trialLengths[i] = ThreadLocalRandom.current().nextLong(average - jitter, average + jitter + 1);
+			}
 
 			initialized = true;
 		}
@@ -391,7 +399,7 @@ public class GameScreen extends Screen {
 		double timeUsed = owner.getGameState().getRandomGen().calcKeyFrames(keyFramesList, 
 				MIN_JUMP_LENGTH, 
 				MAX_JUMP_LENGTH,
-				trialLength, 
+				trialLengths[trialCount-1],
 				stim.getWidth()/2,
 				stim.getHeight()/2,
 				stim.getCenter(), 
@@ -402,8 +410,8 @@ public class GameScreen extends Screen {
 			// Keep track of where the target started, for the red circle
 			stimTargetStartPos = startingGrid;
 			// If the target used more time than allocated, update this
-			trialLength = (long) timeUsed;
-			trial.setLength(trialLength);
+			trialLengths[trialCount-1] = (long) timeUsed;
+			trial.setLength(trialLengths[trialCount-1]);
 
 		}
 
@@ -419,7 +427,7 @@ public class GameScreen extends Screen {
 		};
 
 		stim.setAnimator( new AnimatorBuilder()
-		.setDuration(trialLength, TimeUnit.MILLISECONDS)
+		.setDuration(trialLengths[trialCount-1], TimeUnit.MILLISECONDS)
 		.addTarget(randomMovement)
 		.setRepeatCount(1)
 		.setRepeatBehavior(RepeatBehavior.LOOP)
@@ -584,7 +592,7 @@ public class GameScreen extends Screen {
 
 				// If we've run for at least the length of the trial, 
 				// quit out to the part where the user clicks on the grid
-				if( trialLength < (frameStartTime - trialStart) ) {
+				if( trialLengths[trialCount-1] < (frameStartTime - trialStart) ) {
 					//this.cancel();
 
 
