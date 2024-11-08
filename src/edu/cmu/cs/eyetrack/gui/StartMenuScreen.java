@@ -296,7 +296,7 @@ public class StartMenuScreen extends Screen {
 		// The random movement of each object is controlled by a seed; for repetition's
 		// sake, allow the user to manually set a seed if desired.
 		JLabel lblSeed = new JLabel("Seed:", JLabel.TRAILING);
-		spnSeed = new JSpinner(new SpinnerNumberModel(System.currentTimeMillis(), 0, Long.MAX_VALUE, 1));
+		spnSeed = new JSpinner(new SpinnerNumberModel(0, Integer.MIN_VALUE, Integer.MAX_VALUE, 1));
 		lblSeed.setLabelFor(spnSeed);
 
 		// Number of width boxes x height boxes on our testing grid
@@ -485,6 +485,7 @@ public class StartMenuScreen extends Screen {
 		trialDataPanel.add(lblImageDirectory); trialDataPanel.add(txtImageDirectory); numRows++;
 		trialDataPanel.add(lblUseMemoryCheck); trialDataPanel.add(new JPanel(new GridLayout(1,0)){{ add(rdoMemCheckNone); add(rdoMemCheck2x2); if(Util.CMU_ONLY) { add(rdoMemCheckNxN); } }}); numRows++;
 		trialDataPanel.add(lblUseFullscreen); trialDataPanel.add(chkUseFullscreen); numRows++;
+		trialDataPanel.add(lblSeed); trialDataPanel.add(spnSeed); numRows++;
 		if(Util.CMU_ONLY) {
 			trialDataPanel.add(lblMotionConstraint); trialDataPanel.add(new JPanel(new GridLayout(1,0)){{ add(rdoMotionPixel); add(rdoMotionGrid);}}); numRows++;
 		}
@@ -505,21 +506,6 @@ public class StartMenuScreen extends Screen {
 				6, 6,		//initX, initY
 				6, 6);		//xPad, yPad
 
-
-
-		// One final segment of the GUI deals with bookkeeping and extraneous stuff
-		//JPanel extraDataPanel = new JPanel(new SpringLayout());
-		//extraDataPanel.setBorder(BorderFactory.createTitledBorder("Bookkeeping"));
-		//
-		//numRows = 0;
-		//extraDataPanel.add(lblSeed); extraDataPanel.add(spnSeed); numRows++;
-		//
-		//SpringUtilities.makeCompactGrid(extraDataPanel,
-		//		numRows, 2,	//rows, cols
-		//        6, 6,		//initX, initY
-		//        6, 6);		//xPad, yPad
-
-
 		//
 		// All user input is grouped together into a single panel
 		JPanel inputDataPanel = new JPanel(new GridBagLayout());
@@ -533,7 +519,6 @@ public class StartMenuScreen extends Screen {
 		inputCons.gridx = 0;
 		inputCons.gridy = 1;
 		inputDataPanel.add(trialDataPanel, inputCons);
-		//inputDataPanel.add(extraDataPanel);
 
 
 		//
@@ -699,8 +684,7 @@ public class StartMenuScreen extends Screen {
 			boolean usesSamplingWithReplacement = chkRandomWithReplacement.isSelected();
 			Color specificTargetColor = (Color) cbxTargetColor.getSelectedItem();
 			double fps = Double.valueOf(spnFramesPerSecond.getValue().toString());
-			//long seed = Long.valueOf(spnSeed.getValue().toString());
-			long seed = System.currentTimeMillis();
+			long seed = Long.valueOf(spnSeed.getValue().toString());
 			int gridX = Integer.valueOf(spnGridXSize.getValue().toString());
 			int gridY = Integer.valueOf(spnGridYSize.getValue().toString());
 			int pixelWidth = (int) trialDim.getWidth();
