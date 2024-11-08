@@ -79,7 +79,7 @@ public class StartMenuScreen extends Screen {
 	private String dateFormat = "MM/dd/yyyy";
 
 
-	private JTextField txtName, txtTestLocation, txtImageDirectory, urmom;
+	private JTextField txtName, txtTestLocation, txtImageDirectory;
 	private JDateChooser datBirthdate, datTestDate;
 	private JComboBox cbxGender, cbxTrialType, cbxTargetType, cbxTargetColor;
 	private JSpinner spnDistractors, spnTrialCount, spnObjectSpeed, spnMinTrialLength, spnFramesPerSecond, spnSeed, spnGridXSize, spnGridYSize;
@@ -132,12 +132,6 @@ public class StartMenuScreen extends Screen {
 		txtTestLocation.setText("Cognitive Development Lab");
 		txtTestLocation.addFocusListener(new SelectOnceFocusListener());
 		lblTestLocation.setLabelFor(txtTestLocation);
-
-		JLabel lblurmom = new JLabel("yoooo:", JLabel.TRAILING);
-		urmom = new JTextField(50);
-		urmom.setText("1,2,3,2,1");
-		urmom.addFocusListener(new SelectOnceFocusListener());
-		lblurmom.setLabelFor(urmom);
 
 
 
@@ -461,7 +455,6 @@ public class StartMenuScreen extends Screen {
 		trialDataPanel.setBorder(BorderFactory.createTitledBorder("Trial Data"));
 
 		numRows = 0;
-		trialDataPanel.add(lblurmom); trialDataPanel.add(urmom); numRows++;
 		trialDataPanel.add(lblDistractors); trialDataPanel.add(spnDistractors); numRows++;
 		trialDataPanel.add(lblObjectSpeed); trialDataPanel.add(spnObjectSpeed); numRows++;
 		trialDataPanel.add(lblTrialType); trialDataPanel.add(cbxTrialType); numRows++;
