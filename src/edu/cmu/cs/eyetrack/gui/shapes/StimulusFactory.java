@@ -31,7 +31,7 @@ public class StimulusFactory {
 	}
 	
 	public void reset() {
-		this.random = new Random();
+		//this.random = new Random();
 		this.stimuli = new HashMap<StimulusType, List<Stimulus>>();
 		
 		// If we've never seen this type of stimulus before, initialize
