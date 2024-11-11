@@ -325,7 +325,17 @@ public class RandomGen {
 		framesList.add(framesY);
 		return totalTime;
 	}
-
+	
+	// https://stackoverflow.com/a/1520212
+	public void shuffleArray(long[] ar) {
+		for (int i = ar.length - 1; i > 0; i--) {
+			int index = random.nextInt(i + 1);
+			// Simple swap
+			long a = ar[index];
+			ar[index] = ar[i];
+			ar[i] = a;
+		}
+	}
 
 	public static List<Color> getColorList() {
 		return colorList;

@@ -82,7 +82,7 @@ public class StartMenuScreen extends Screen {
 	private JTextField txtName, txtTestLocation, txtImageDirectory;
 	private JDateChooser datBirthdate, datTestDate;
 	private JComboBox cbxGender, cbxTrialType, cbxTargetType, cbxTargetColor;
-	private JSpinner spnDistractors, spnTrialCount, spnObjectSpeed, spnMinTrialLength, spnFramesPerSecond, spnSeed, spnGridXSize, spnGridYSize;
+	private JSpinner spnDistractors, spnObjectSpeed, spnMinTrialLength, spnFramesPerSecond, spnSeed, spnGridXSize, spnGridYSize;
 	private JCheckBox chkRandomTarget, chkRandomWithReplacement, chkUseBackgroundImages, chkUseFullscreen;
 	private JRadioButton rdoMemCheckNone, rdoMemCheck2x2, rdoMemCheckNxN, rdoMotionPixel, rdoMotionGrid, rdoMotionLinear, rdoMotionRandom, rdoShapeTypeCMU, rdoShapeTypeUColorado;
 
@@ -151,12 +151,6 @@ public class StartMenuScreen extends Screen {
 		cbxTrialType.setSelectedIndex(0);
 		lblTrialType.setLabelFor(cbxTrialType);
 
-		// How many trials (in a row) should we run?
-		// Default value: 4; Minimum value: 1; Maximum value: none; Increment: 1
-		JLabel lblTrialCount = new JLabel("Trial Count:", JLabel.TRAILING);
-		spnTrialCount = new JSpinner(new SpinnerNumberModel(3, 1, null, 1));
-		lblTrialCount.setLabelFor(spnTrialCount);
-
 		// Do we want a random target type/color per trial, or user-set? 
 		// Need a different model for CMU, UColorado's shapes 
 		final Map<Stimulus.StimulusClass, ComboBoxModel> nameModels = new HashMap<Stimulus.StimulusClass, ComboBoxModel>();
@@ -212,7 +206,6 @@ public class StartMenuScreen extends Screen {
 				cbxTargetColor.setEnabled(!chkRandomTarget.isSelected() && !rdoShapeTypeUColorado.isSelected());
 				lblTargetColor.setEnabled(!chkRandomTarget.isSelected() && !rdoShapeTypeUColorado.isSelected());
 				chkRandomWithReplacement.setEnabled(chkRandomTarget.isSelected());
-				sanitizeNumTrials();
 			}
 		});
 		lblRandomTarget.setLabelFor(chkRandomTarget);
@@ -223,7 +216,6 @@ public class StartMenuScreen extends Screen {
 		chkRandomWithReplacement.addItemListener(new ItemListener() {
 			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void itemStateChanged(ItemEvent e) {
-				sanitizeNumTrials();
 			}
 		});
 
@@ -271,7 +263,7 @@ public class StartMenuScreen extends Screen {
 		JLabel lblObjectSpeed = new JLabel(
 				"<html>Object Speed:<br><em>Pixels per second</em></html>", 
 				JLabel.TRAILING);
-		spnObjectSpeed = new JSpinner(new SpinnerNumberModel(500, 1, null, 50));
+		spnObjectSpeed = new JSpinner(new SpinnerNumberModel(800, 1, null, 50));
 		lblObjectSpeed.setLabelFor(spnObjectSpeed);
 
 		// Trial lengths are randomized, but must be at least this long
@@ -302,14 +294,14 @@ public class StartMenuScreen extends Screen {
 		// Number of width boxes x height boxes on our testing grid
 		JLabel lblGridXSize = new JLabel("Grid Width:", JLabel.TRAILING);
 		JLabel lblGridYSize = new JLabel("Grid Height:", JLabel.TRAILING);
-		spnGridXSize = new JSpinner(new SpinnerNumberModel(3,1,10,1));
+		spnGridXSize = new JSpinner(new SpinnerNumberModel(4,1,10,1));
 		spnGridXSize.addChangeListener(new ChangeListener() {
 			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void stateChanged(ChangeEvent arg0) {
 				sanitizeNumDistractors();
 			}
 		});
-		spnGridYSize = new JSpinner(new SpinnerNumberModel(3,1,10,1));
+		spnGridYSize = new JSpinner(new SpinnerNumberModel(4,1,10,1));
 		spnGridYSize.addChangeListener(new ChangeListener() {
 			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void stateChanged(ChangeEvent arg0) {
@@ -394,7 +386,7 @@ public class StartMenuScreen extends Screen {
 		rdoMotionRandom = new JRadioButton("Random");
 		motionInterpGroup.add(rdoMotionLinear);
 		motionInterpGroup.add(rdoMotionRandom);
-		rdoMotionLinear.setSelected(true);
+		rdoMotionRandom.setSelected(true);
 		lblMotionInterpolation.setLabelFor(rdoMotionLinear);
 
 
@@ -458,7 +450,6 @@ public class StartMenuScreen extends Screen {
 		trialDataPanel.add(lblDistractors); trialDataPanel.add(spnDistractors); numRows++;
 		trialDataPanel.add(lblObjectSpeed); trialDataPanel.add(spnObjectSpeed); numRows++;
 		trialDataPanel.add(lblTrialType); trialDataPanel.add(cbxTrialType); numRows++;
-		trialDataPanel.add(lblTrialCount); trialDataPanel.add(spnTrialCount); numRows++;
 		if(Util.CMU_ONLY) {
 			trialDataPanel.add(new JPanel(new GridLayout(0,1)){{
 				add(lblRandomTarget); add(lblShapeType); 
@@ -490,7 +481,8 @@ public class StartMenuScreen extends Screen {
 			trialDataPanel.add(lblMotionConstraint); trialDataPanel.add(new JPanel(new GridLayout(1,0)){{ add(rdoMotionPixel); add(rdoMotionGrid);}}); numRows++;
 		}
 		if(Util.CMU_ONLY) {
-			trialDataPanel.add(lblMotionInterpolation); trialDataPanel.add(new JPanel(new GridLayout(1,0)){{ add(rdoMotionLinear); add(rdoMotionRandom);}}); numRows++;
+			trialDataPanel.add(lblMotionInterpolation);
+			trialDataPanel.add(new JPanel(new GridLayout(1,0)){{ add(rdoMotionLinear); add(rdoMotionRandom);}}); numRows++;
 		}
 
 
@@ -549,20 +541,6 @@ public class StartMenuScreen extends Screen {
 		model.setMaximum(newMax);
 
 		if( Integer.valueOf(spnDistractors.getValue().toString()) > newMax ) {
-			model.setValue(newMax);
-		}
-	}
-
-	private void sanitizeNumTrials() {
-
-		// Maximum number of trials is infinite if we're sampling random targets with replacement,
-		// but it's only |# Stimulus| if we're sampling with replacement		
-		Integer newMax = (chkRandomTarget.isSelected() && !chkRandomWithReplacement.isSelected()) ? cbxTargetType.getItemCount() : null;
-
-		SpinnerNumberModel model = (SpinnerNumberModel) spnTrialCount.getModel();
-		model.setMaximum(newMax);
-
-		if( null != newMax && Integer.valueOf(spnTrialCount.getValue().toString()) > newMax ) {
 			model.setValue(newMax);
 		}
 	}
@@ -678,7 +656,6 @@ public class StartMenuScreen extends Screen {
 			int numDistractors = Integer.valueOf(spnDistractors.getValue().toString());
 			double objectSpeed = Double.valueOf(spnObjectSpeed.getValue().toString());
 			TrialType trialType = TrialType.getTrialType(cbxTrialType.getSelectedItem().toString());
-			int trialCount = Integer.valueOf(spnTrialCount.getValue().toString());
 			double trialLength = Double.valueOf(spnMinTrialLength.getValue().toString());
 			boolean usesRandomTarget = chkRandomTarget.isSelected();
 			boolean usesSamplingWithReplacement = chkRandomWithReplacement.isSelected();
@@ -708,6 +685,8 @@ public class StartMenuScreen extends Screen {
 			// UColorado has a specific list per type I or II; deal with that now 
 			Stimulus canonicalTarget = null;
 			ColoradoTypedTrial coloradoTypedTrial = null;
+
+			int trialCount = 0;
 			if(stimulusClass == Stimulus.StimulusClass.UCOLORADO) {
 				ColoradoTypedTrial.TRIAL_TYPE ucTrialType = ColoradoTypedTrial.TRIAL_TYPE.valueOf(cbxTargetType.getSelectedItem().toString());
 				coloradoTypedTrial = new ColoradoTypedTrial(ucTrialType);
@@ -790,6 +769,8 @@ public class StartMenuScreen extends Screen {
 			// parameters and experimental setup
 			Settings settings = new Settings();
 			settings.setUser(settings.new User(name, gender, birthdate, testDate, testLocation));	
+			// Trial count is fixed to 24
+			trialCount = 24;
 			settings.setExperiment(settings.new Experiment(numDistractors, objectSpeed, trialType, trialCount, trialLength, usesRandomTarget, usesSamplingWithReplacement, stimulusClass, canonicalTarget, coloradoTypedTrial, fps, seed, gridX, gridY, pixelWidth, pixelHeight, (int) insetX, (int) insetY, usesBackgroundImages, backgroundImageDirectory, memCheckType, usesFullscreen, motionConstraintType, motionInterpolationType));
 
 			// Alert the greater game state to our initialization parameters

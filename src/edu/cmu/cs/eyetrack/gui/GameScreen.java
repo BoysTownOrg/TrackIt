@@ -237,15 +237,23 @@ public class GameScreen extends Screen {
 			owner.getGameState().registerStimuli(blockWidth, blockHeight, settings.getExperiment().getStimulusClass());
 
 			// Compute the ending location for the target (across all trials)
-			stimTargetEndingPos = owner.getGameState().getRandomGen().getRandomEndPositions(
-					owner.getGameState().getSettings().getExperiment().getTrialCount() );
+			stimTargetEndingPos = owner.getGameState().getRandomGen().getRandomEndPositions(24);
 
-			trialLengths = new long[settings.getExperiment().getTrialCount()];
-			for(int i=0; i < settings.getExperiment().getTrialCount(); i++) {
-				long average = ((long) settings.getExperiment().getTrialLength());
-				long jitter = 2000;
-				trialLengths[i] = ThreadLocalRandom.current().nextLong(average - jitter, average + jitter + 1);
+			// TODO: make sure we actually use 24 trials
+			trialLengths = new long[24];
+			int j = 0;
+			for (int i = 0; i < 3; i++) {
+				trialLengths[j++] = 20000; 
+				trialLengths[j++] = 25000; 
+				trialLengths[j++] = 30000; 
+				trialLengths[j++] = 35000; 
 			}
+			for (int i = 0; i < 4; i++) {
+				trialLengths[j++] = 5000; 
+				trialLengths[j++] = 10000; 
+				trialLengths[j++] = 15000; 
+			}
+			owner.getGameState().getRandomGen().shuffleArray(trialLengths);
 
 			initialized = true;
 		}
@@ -255,7 +263,6 @@ public class GameScreen extends Screen {
 		setupNewTrial(settings.getExperiment().getNumDistractors());
 		requestFocusInWindow();
 	}
-
 
 	private void setupNewTrial(int numDistractors) {
 
