@@ -235,25 +235,31 @@ public class GameScreen extends Screen {
 			// Register real stimuli
 
 			owner.getGameState().registerStimuli(blockWidth, blockHeight, settings.getExperiment().getStimulusClass());
+			int totalTrials = settings.getExperiment().getTrialCount();
 
 			// Compute the ending location for the target (across all trials)
-			stimTargetEndingPos = owner.getGameState().getRandomGen().getRandomEndPositions(24);
+			stimTargetEndingPos = owner.getGameState().getRandomGen().getRandomEndPositions(totalTrials);
 
-			// TODO: make sure we actually use 24 trials
-			trialLengths = new long[24];
-			int j = 0;
-			for (int i = 0; i < 3; i++) {
-				trialLengths[j++] = 20000; 
-				trialLengths[j++] = 25000; 
-				trialLengths[j++] = 30000; 
-				trialLengths[j++] = 35000; 
+			trialLengths = new long[totalTrials];
+			if (totalTrials == 24) {
+				int j = 0;
+				for (int i = 0; i < 3; i++) {
+					trialLengths[j++] = 20000; 
+					trialLengths[j++] = 25000; 
+					trialLengths[j++] = 30000; 
+					trialLengths[j++] = 35000; 
+				}
+				for (int i = 0; i < 4; i++) {
+					trialLengths[j++] = 5000; 
+					trialLengths[j++] = 10000; 
+					trialLengths[j++] = 15000; 
+				}
+				owner.getGameState().getRandomGen().shuffleArray(trialLengths);
+			} else {
+				for (int i = 0; i < totalTrials; i++) {
+					trialLengths[i] = 5000;
+				}
 			}
-			for (int i = 0; i < 4; i++) {
-				trialLengths[j++] = 5000; 
-				trialLengths[j++] = 10000; 
-				trialLengths[j++] = 15000; 
-			}
-			owner.getGameState().getRandomGen().shuffleArray(trialLengths);
 
 			initialized = true;
 		}

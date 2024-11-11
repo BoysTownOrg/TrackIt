@@ -83,7 +83,7 @@ public class StartMenuScreen extends Screen {
 	private JDateChooser datBirthdate, datTestDate;
 	private JComboBox cbxGender, cbxTrialType, cbxTargetType, cbxTargetColor;
 	private JSpinner spnDistractors, spnObjectSpeed, spnMinTrialLength, spnFramesPerSecond, spnSeed, spnGridXSize, spnGridYSize;
-	private JCheckBox chkRandomTarget, chkRandomWithReplacement, chkUseBackgroundImages, chkUseFullscreen;
+	private JCheckBox chkRandomTarget, chkRandomWithReplacement, chkUseBackgroundImages, chkUseFullscreen, chkTraining;
 	private JRadioButton rdoMemCheckNone, rdoMemCheck2x2, rdoMemCheckNxN, rdoMotionPixel, rdoMotionGrid, rdoMotionLinear, rdoMotionRandom, rdoShapeTypeCMU, rdoShapeTypeUColorado;
 
 	public StartMenuScreen(EyeTrack owner, PanelID nextScreen) {
@@ -363,6 +363,10 @@ public class StartMenuScreen extends Screen {
 		chkUseFullscreen = new JCheckBox("Fullscreen Trials", true);
 		lblUseFullscreen.setLabelFor(chkUseFullscreen);
 
+		JLabel lblTraining = new JLabel("", JLabel.TRAILING);
+		chkTraining = new JCheckBox("Training", false);
+		lblTraining.setLabelFor(chkTraining);
+
 
 		// Constrain targets/distractors to trajectory changes on pixel-level, or center-of-grid level
 		JLabel lblMotionConstraint = new JLabel(
@@ -476,6 +480,7 @@ public class StartMenuScreen extends Screen {
 		trialDataPanel.add(lblImageDirectory); trialDataPanel.add(txtImageDirectory); numRows++;
 		trialDataPanel.add(lblUseMemoryCheck); trialDataPanel.add(new JPanel(new GridLayout(1,0)){{ add(rdoMemCheckNone); add(rdoMemCheck2x2); if(Util.CMU_ONLY) { add(rdoMemCheckNxN); } }}); numRows++;
 		trialDataPanel.add(lblUseFullscreen); trialDataPanel.add(chkUseFullscreen); numRows++;
+		trialDataPanel.add(lblTraining); trialDataPanel.add(chkTraining); numRows++;
 		trialDataPanel.add(lblSeed); trialDataPanel.add(spnSeed); numRows++;
 		if(Util.CMU_ONLY) {
 			trialDataPanel.add(lblMotionConstraint); trialDataPanel.add(new JPanel(new GridLayout(1,0)){{ add(rdoMotionPixel); add(rdoMotionGrid);}}); numRows++;
@@ -672,6 +677,7 @@ public class StartMenuScreen extends Screen {
 				rdoMemCheck2x2.isSelected() ? Settings.MemoryCheckType.m2X2 :
 					Settings.MemoryCheckType.mNXN;
 			boolean usesFullscreen = chkUseFullscreen.isSelected();
+			boolean usesTraining = chkTraining.isSelected();
 			MotionConstraintType motionConstraintType = MotionConstraintType.GRID;
 			if(Util.CMU_ONLY) {
 				motionConstraintType = rdoMotionPixel.isSelected() ? MotionConstraintType.PIXEL : MotionConstraintType.GRID;
@@ -769,8 +775,11 @@ public class StartMenuScreen extends Screen {
 			// parameters and experimental setup
 			Settings settings = new Settings();
 			settings.setUser(settings.new User(name, gender, birthdate, testDate, testLocation));	
-			// Trial count is fixed to 24
-			trialCount = 24;
+			if (usesTraining) {
+				trialCount = 2;
+			} else {
+				trialCount = 24;
+			}
 			settings.setExperiment(settings.new Experiment(numDistractors, objectSpeed, trialType, trialCount, trialLength, usesRandomTarget, usesSamplingWithReplacement, stimulusClass, canonicalTarget, coloradoTypedTrial, fps, seed, gridX, gridY, pixelWidth, pixelHeight, (int) insetX, (int) insetY, usesBackgroundImages, backgroundImageDirectory, memCheckType, usesFullscreen, motionConstraintType, motionInterpolationType));
 
 			// Alert the greater game state to our initialization parameters
