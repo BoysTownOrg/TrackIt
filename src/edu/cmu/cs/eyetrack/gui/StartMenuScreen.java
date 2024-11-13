@@ -82,7 +82,7 @@ public class StartMenuScreen extends Screen {
 	private JTextField txtName, txtTestLocation, txtImageDirectory;
 	private JDateChooser datBirthdate, datTestDate;
 	private JComboBox cbxGender, cbxTrialType, cbxTargetType, cbxTargetColor;
-	private JSpinner spnDistractors, spnObjectSpeed, spnMinTrialLength, spnFramesPerSecond, spnSeed, spnGridXSize, spnGridYSize;
+	private JSpinner spnDistractors, spnObjectSpeed, spnFramesPerSecond, spnSeed, spnGridXSize, spnGridYSize;
 	private JCheckBox chkRandomTarget, chkRandomWithReplacement, chkUseBackgroundImages, chkUseFullscreen, chkTraining;
 	private JRadioButton rdoMemCheckNone, rdoMemCheck2x2, rdoMemCheckNxN, rdoMotionPixel, rdoMotionGrid, rdoMotionLinear, rdoMotionRandom, rdoShapeTypeCMU, rdoShapeTypeUColorado;
 
@@ -265,14 +265,6 @@ public class StartMenuScreen extends Screen {
 				JLabel.TRAILING);
 		spnObjectSpeed = new JSpinner(new SpinnerNumberModel(800, 1, null, 50));
 		lblObjectSpeed.setLabelFor(spnObjectSpeed);
-
-		// Trial lengths are randomized, but must be at least this long
-		// Measured in milliseconds
-		JLabel lblMinTrialLength = new JLabel(
-				"<html>Min. Trial<br>Length <em>(ms)</em>:</html>", 
-				JLabel.TRAILING);
-		spnMinTrialLength = new JSpinner(new SpinnerNumberModel(10000, 1, null, 1000));
-		lblMinTrialLength.setLabelFor(spnMinTrialLength);
 
 		// How many frames per second should we update?  This might need to be changed
 		// for different eyetrackers, eventually
@@ -472,7 +464,6 @@ public class StartMenuScreen extends Screen {
 				add(cbxTargetType); add(cbxTargetColor);
 			}}); numRows++;
 		}
-		trialDataPanel.add(lblMinTrialLength); trialDataPanel.add(spnMinTrialLength); numRows++;
 		trialDataPanel.add(lblFramesPerSecond); trialDataPanel.add(spnFramesPerSecond); numRows++;
 		trialDataPanel.add(lblGridXSize); trialDataPanel.add(spnGridXSize); numRows++;
 		trialDataPanel.add(lblGridYSize); trialDataPanel.add(spnGridYSize); numRows++;
@@ -661,7 +652,6 @@ public class StartMenuScreen extends Screen {
 			int numDistractors = Integer.valueOf(spnDistractors.getValue().toString());
 			double objectSpeed = Double.valueOf(spnObjectSpeed.getValue().toString());
 			TrialType trialType = TrialType.getTrialType(cbxTrialType.getSelectedItem().toString());
-			double trialLength = Double.valueOf(spnMinTrialLength.getValue().toString());
 			boolean usesRandomTarget = chkRandomTarget.isSelected();
 			boolean usesSamplingWithReplacement = chkRandomWithReplacement.isSelected();
 			Color specificTargetColor = (Color) cbxTargetColor.getSelectedItem();
@@ -780,6 +770,8 @@ public class StartMenuScreen extends Screen {
 			} else {
 				trialCount = 24;
 			}
+			// this trial length is ignored
+			double trialLength = 0;
 			settings.setExperiment(settings.new Experiment(numDistractors, objectSpeed, trialType, trialCount, trialLength, usesRandomTarget, usesSamplingWithReplacement, stimulusClass, canonicalTarget, coloradoTypedTrial, fps, seed, gridX, gridY, pixelWidth, pixelHeight, (int) insetX, (int) insetY, usesBackgroundImages, backgroundImageDirectory, memCheckType, usesFullscreen, motionConstraintType, motionInterpolationType));
 
 			// Alert the greater game state to our initialization parameters
