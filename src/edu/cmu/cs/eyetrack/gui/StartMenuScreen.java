@@ -80,8 +80,8 @@ public class StartMenuScreen extends Screen {
 
 
 	private JTextField txtName, txtTestLocation, txtImageDirectory;
-	private JDateChooser datBirthdate, datTestDate;
-	private JComboBox cbxGender, cbxTrialType, cbxTargetType, cbxTargetColor;
+	private JDateChooser datTestDate;
+	private JComboBox cbxTrialType, cbxTargetType, cbxTargetColor;
 	private JSpinner spnDistractors, spnObjectSpeed, spnFramesPerSecond, spnSeed, spnGridXSize, spnGridYSize;
 	private JCheckBox chkRandomTarget, chkRandomWithReplacement, chkUseBackgroundImages, chkUseFullscreen, chkTraining;
 	private JRadioButton rdoMemCheckNone, rdoMemCheck2x2, rdoMemCheckNxN, rdoMotionPixel, rdoMotionGrid, rdoMotionLinear, rdoMotionRandom, rdoShapeTypeCMU, rdoShapeTypeUColorado;
@@ -106,19 +106,6 @@ public class StartMenuScreen extends Screen {
 		txtName.addFocusListener(new SelectOnceFocusListener());		
 		lblName.setLabelFor(txtName);
 
-		// User's gender, limited selection, defaults to Male
-		JLabel lblGender = new JLabel("Gender:", JLabel.TRAILING);
-		cbxGender = new JComboBox(genderList);
-		cbxGender.setSelectedIndex(0);
-		lblGender.setLabelFor(cbxGender);
-
-		// User's birthday (i.e., age). Defaults to Unix time 0
-		JLabel lblBirthdate = new JLabel("Birthdate:", JLabel.TRAILING);
-		datBirthdate = new JDateChooser();
-		datBirthdate.setDateFormatString(dateFormat);
-		datBirthdate.setDate(new Date(0));
-		lblBirthdate.setLabelFor(datBirthdate);
-
 		// When did this test occur? Defaults to today's date.
 		JLabel lblTestDate = new JLabel("Test Date:", JLabel.TRAILING);
 		datTestDate = new JDateChooser();
@@ -129,7 +116,7 @@ public class StartMenuScreen extends Screen {
 		// Where did this test occur? Defaults to CMU's labs.
 		JLabel lblTestLocation = new JLabel("Test Location:", JLabel.TRAILING);
 		txtTestLocation = new JTextField(50);
-		txtTestLocation.setText("Cognitive Development Lab");
+		txtTestLocation.setText("CVP van");
 		txtTestLocation.addFocusListener(new SelectOnceFocusListener());
 		lblTestLocation.setLabelFor(txtTestLocation);
 
@@ -142,13 +129,13 @@ public class StartMenuScreen extends Screen {
 		// How many distractors are on the screen?
 		// Default value: 4; Minimum value: 0; Maximum value: 8; Increment: 1
 		JLabel lblDistractors = new JLabel("Distractors:", JLabel.TRAILING);
-		spnDistractors = new JSpinner(new SpinnerNumberModel(6, 0, 8, 1));
+		spnDistractors = new JSpinner(new SpinnerNumberModel(8, 0, 8, 1));
 		lblDistractors.setLabelFor(spnDistractors);
 
 		// What do the distractors look like (e.g., same shape as main object)?
 		JLabel lblTrialType = new JLabel("Trial Type:", JLabel.TRAILING);
 		cbxTrialType = new JComboBox(trialTypes);
-		cbxTrialType.setSelectedIndex(0);
+		cbxTrialType.setSelectedIndex(1);
 		lblTrialType.setLabelFor(cbxTrialType);
 
 		// Do we want a random target type/color per trial, or user-set? 
@@ -427,8 +414,6 @@ public class StartMenuScreen extends Screen {
 
 		int numRows = 0;
 		userDataPanel.add(lblName); userDataPanel.add(txtName); numRows++;
-		userDataPanel.add(lblGender); userDataPanel.add(cbxGender); numRows++;
-		userDataPanel.add(lblBirthdate); userDataPanel.add(datBirthdate); numRows++;
 		userDataPanel.add(lblTestDate); userDataPanel.add(datTestDate); numRows++;
 		userDataPanel.add(lblTestLocation); userDataPanel.add(txtTestLocation); numRows++;
 
@@ -603,8 +588,11 @@ public class StartMenuScreen extends Screen {
 
 			// Grab user-specified details about the user from the GUI elements
 			String name = txtName.getText();
-			Gender gender = Gender.getGender(cbxGender.getSelectedItem().toString());
-			Date birthdate = datBirthdate.getDate();
+
+			// gender and birthday ignored
+			Gender gender = Gender.UNKNOWN;
+			Date birthdate = new Date();
+
 			Date testDate = datTestDate.getDate();
 			String testLocation = txtTestLocation.getText();
 

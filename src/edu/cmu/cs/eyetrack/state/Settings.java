@@ -47,9 +47,6 @@ public class Settings implements CSVWritable {
 		return new String[] {
 				"Track-It Version",
 				"Name",
-				"Gender",
-				"Birthdate",
-				"Age",
 				"Test Date",
 				"Test Location",
 				"Number of Distractors",
@@ -82,9 +79,6 @@ public class Settings implements CSVWritable {
 		data.add(new String[] {
 				Util.getTrackItVersion(),
 				user.getName(),
-				String.valueOf(user.getGender()),
-				dateFormatter.format(user.getBirthdate()),
-				String.valueOf(user.getAge()),
 				dateFormatter.format(user.getTestDate()),
 				user.getTestLocation(),
 				String.valueOf(experiment.getNumDistractors()),
