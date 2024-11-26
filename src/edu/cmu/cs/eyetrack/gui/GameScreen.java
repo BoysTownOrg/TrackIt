@@ -51,7 +51,7 @@ import edu.cmu.cs.eyetrack.state.Trial;
 @SuppressWarnings("serial")
 public class GameScreen extends Screen {
 
-	private enum Status { UNSTARTED, ANIM_STARTED, WAITING_FOR_CLICK, DONE };
+	private enum Status { UNSTARTED, BLINK_ON, BLINK_OFF, ANIM_STARTED, WAITING_FOR_CLICK, DONE; }
 
 	private static int MIN_JUMP_LENGTH = 500;
 	private static int MAX_JUMP_LENGTH = 1500;
@@ -104,6 +104,18 @@ public class GameScreen extends Screen {
 	}
 
 	private void startNewGame() {
+		long blinkLength = 100L;
+		int numBlinks = 20;
+		for (int i = 0; i < numBlinks; i++) {
+			status = (status == Status.BLINK_OFF) ? Status.BLINK_ON : Status.BLINK_OFF;
+
+			paintImmediately(((Integer)stimTargetStartPos.getX()).intValue(), ((Integer)stimTargetStartPos.getY()).intValue(), 10000, 10000);
+			try {
+				Thread.sleep(blinkLength);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} 
+		} 
 
 		status = Status.ANIM_STARTED;
 
@@ -484,12 +496,14 @@ public class GameScreen extends Screen {
 		//g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		// Draw each of our stimuli
-		if( status == Status.UNSTARTED || status == Status.ANIM_STARTED ) {
+		if( status == Status.UNSTARTED || status == Status.ANIM_STARTED || status == Status.BLINK_OFF || status == Status.BLINK_ON ) {
 
 			for(Stimulus stimulus : stimDistractors) {
 				stimulus.draw(g2d);
 			}
-			stimTarget.draw(g2d);
+			if (status != Status.BLINK_OFF) {
+				stimTarget.draw(g2d);
+			}
 		}
 
 		// Draw a red circle around the target stimulus
