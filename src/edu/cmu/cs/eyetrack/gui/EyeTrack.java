@@ -136,10 +136,8 @@ public class EyeTrack extends JFrame {
 	public static void main(final String args[]) {
 		Runnable createAndShow = new Runnable() {
 			public void run() { 
-				// https://stackoverflow.com/a/3680236
-				GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-				int width = 9 * gd.getDisplayMode().getWidth() / 10;
-				int height = 9 * gd.getDisplayMode().getHeight() / 10;
+				int width = 1280;
+				int height = 720;
 				
 				if(args.length == 2) {
 					width = Integer.valueOf(args[0]);
