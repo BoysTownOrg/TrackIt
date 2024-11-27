@@ -8,7 +8,7 @@ public abstract class Util {
 	public static enum PanelID { START_MENU, GAME, BUFFER1, DISTRACTOR_LINEUP, BUFFER2 };
 
 	public static String getTrackItVersion() {
-		return "1.0.0-variable-trial-length";
+		return "1.0.1-variable-trial-length";
 	}
 	
 	// Debug settings, debug utilities
