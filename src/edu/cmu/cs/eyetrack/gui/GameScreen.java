@@ -254,29 +254,34 @@ public class GameScreen extends Screen {
 			stimTargetEndingPos = owner.getGameState().getRandomGen().getRandomEndPositions(totalTrials);
 
 			trialLengths = new long[totalTrials];
-			if (totalTrials == 18) {
+
+			long[] testTrialLengthChoices = {20000, 23750, 27500, 31250, 35000};
+			int ofEachTestTrialLength = 2;
+			long[] foilTrialLengthChoices = {5000, 10000, 15000};
+			int ofEachFoilTrialLength = 2;
+			int trainingTrialCount = 2;
+			int postTrainingTrialCount  = testTrialLengthChoices.length * ofEachTestTrialLength + foilTrialLengthChoices.length * ofEachFoilTrialLength;
+			int expectedTrialCount = postTrainingTrialCount + trainingTrialCount;
+
+			if (totalTrials == expectedTrialCount) {
 				int j = 0;
-				int testTrialCount = 16;
-				int trainingTrialCount = 2;
-				long[] testTrialLengths = new long[testTrialCount];
-				for (int i = 0; i < 2; i++) {
-					testTrialLengths[j++] = 20000;
-					testTrialLengths[j++] = 23750;
-					testTrialLengths[j++] = 27500;
-					testTrialLengths[j++] = 31250;
-					testTrialLengths[j++] = 35000;
+				long[] postTrainingTrialLengths = new long[postTrainingTrialCount];
+				for (int i = 0; i < testTrialLengthChoices.length; i++) {
+					for (int k = 0; k < ofEachTestTrialLength; k++) {
+						postTrainingTrialLengths[j++] = testTrialLengthChoices[i];
+					}
 				}
-				for (int i = 0; i < 2; i++) {
-					testTrialLengths[j++] = 5000;
-					testTrialLengths[j++] = 10000;
-					testTrialLengths[j++] = 15000;
+				for (int i = 0; i < foilTrialLengthChoices.length; i++) {
+					for (int k = 0; k < ofEachFoilTrialLength; k++) {
+						postTrainingTrialLengths[j++] = foilTrialLengthChoices[i];
+					}
 				}
-				owner.getGameState().getRandomGen().shuffleArray(testTrialLengths);
+				owner.getGameState().getRandomGen().shuffleArray(postTrainingTrialLengths);
 				for (int i = 0; i < trainingTrialCount; i++) {
 					trialLengths[i] = 5000;
 				}
-				for (int i = 0; i < testTrialCount; i++) {
-					trialLengths[i+trainingTrialCount] = testTrialLengths[i];
+				for (int i = 0; i < postTrainingTrialCount; i++) {
+					trialLengths[i+trainingTrialCount] = postTrainingTrialLengths[i];
 				}
 			} else {
 				for (int i = 0; i < totalTrials; i++) {
