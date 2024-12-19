@@ -254,21 +254,22 @@ public class GameScreen extends Screen {
 			stimTargetEndingPos = owner.getGameState().getRandomGen().getRandomEndPositions(totalTrials);
 
 			trialLengths = new long[totalTrials];
-			if (totalTrials == 26) {
+			if (totalTrials == 18) {
 				int j = 0;
-				int testTrialCount = 24;
+				int testTrialCount = 16;
 				int trainingTrialCount = 2;
 				long[] testTrialLengths = new long[testTrialCount];
-				for (int i = 0; i < 3; i++) {
-					testTrialLengths[j++] = 20000; 
-					testTrialLengths[j++] = 25000; 
-					testTrialLengths[j++] = 30000; 
-					testTrialLengths[j++] = 35000; 
+				for (int i = 0; i < 2; i++) {
+					testTrialLengths[j++] = 20000;
+					testTrialLengths[j++] = 23750;
+					testTrialLengths[j++] = 27500;
+					testTrialLengths[j++] = 31250;
+					testTrialLengths[j++] = 35000;
 				}
-				for (int i = 0; i < 4; i++) {
-					testTrialLengths[j++] = 5000; 
-					testTrialLengths[j++] = 10000; 
-					testTrialLengths[j++] = 15000; 
+				for (int i = 0; i < 2; i++) {
+					testTrialLengths[j++] = 5000;
+					testTrialLengths[j++] = 10000;
+					testTrialLengths[j++] = 15000;
 				}
 				owner.getGameState().getRandomGen().shuffleArray(testTrialLengths);
 				for (int i = 0; i < trainingTrialCount; i++) {

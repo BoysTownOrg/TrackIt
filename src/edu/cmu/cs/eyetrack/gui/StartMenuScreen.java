@@ -746,7 +746,7 @@ public class StartMenuScreen extends Screen {
 			// parameters and experimental setup
 			Settings settings = new Settings();
 			settings.setUser(settings.new User(name, gender, birthdate, testDate, testLocation));	
-			trialCount = 26;
+			trialCount = 18;
 			// this trial length is ignored
 			double trialLength = 0;
 			settings.setExperiment(settings.new Experiment(numDistractors, objectSpeed, trialType, trialCount, trialLength, usesRandomTarget, usesSamplingWithReplacement, stimulusClass, canonicalTarget, coloradoTypedTrial, fps, seed, gridX, gridY, pixelWidth, pixelHeight, (int) insetX, (int) insetY, usesBackgroundImages, backgroundImageDirectory, memCheckType, usesFullscreen, motionConstraintType, motionInterpolationType));
