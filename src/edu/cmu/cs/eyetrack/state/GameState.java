@@ -111,8 +111,8 @@ public class GameState {
 			StimulusFactory.getInstance().registerStimulus(new OctagonStimulus("Octagon", stimColors.get(colorIdx++), (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
 			StimulusFactory.getInstance().registerStimulus(new CircleStimulus("Circle", stimColors.get(colorIdx++),(int) minBlockDim), StimulusType.BOTH);
 			StimulusFactory.getInstance().registerStimulus(new HeartStimulus("Heart", stimColors.get(colorIdx++), (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
-			StimulusFactory.getInstance().registerStimulus(new StarStimulus("Star", stimColors.get(colorIdx++), 5, minBlockDim / 4.0, minBlockDim / 2.0), StimulusType.BOTH);
-			StimulusFactory.getInstance().registerStimulus(new DiamondStimulus("Diamond", stimColors.get(colorIdx++), (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
+			StimulusFactory.getInstance().registerStimulus(new StarStimulus("Star", stimColors.get(colorIdx++), 5, minBlockDim / 3.0, minBlockDim / 1.5), StimulusType.BOTH);
+			StimulusFactory.getInstance().registerStimulus(new DiamondStimulus("Diamond", stimColors.get(colorIdx++), (int) (blockWidth * 0.65), (int) (blockHeight * 0.65)), StimulusType.BOTH);
 			StimulusFactory.getInstance().registerStimulus(new CrescentStimulus("Crescent", stimColors.get(colorIdx++), (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
 			break;
 		case UCOLORADO:
