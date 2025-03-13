@@ -250,7 +250,7 @@ public class StartMenuScreen extends Screen {
 		JLabel lblObjectSpeed = new JLabel(
 				"<html>Object Speed:<br><em>Pixels per second</em></html>", 
 				JLabel.TRAILING);
-		spnObjectSpeed = new JSpinner(new SpinnerNumberModel(800, 1, null, 50));
+		spnObjectSpeed = new JSpinner(new SpinnerNumberModel(700, 1, null, 50));
 		lblObjectSpeed.setLabelFor(spnObjectSpeed);
 
 		// How many frames per second should we update?  This might need to be changed
